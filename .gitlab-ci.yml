@@ -6,3 +6,27 @@ workflow:
   rules:
   - exists:
     - helmfile.yaml
+
+deploy to dev:
+  extends: .deploy helmfile
+  rules:
+  - if: >
+      $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+  tags:
+  - gtl-k8s-dev
+  environment:
+    auto_stop_in: 1 hour
+    deployment_tier: development
+    name: review/${CI_COMMIT_REF_SLUG}
+    on_stop: remove from dev
+  variables:
+    HELMFILE_ENVIRONMENT: dev
+
+remove from dev:
+  extends: .destroy helmfile job
+  needs:
+  - job: deploy to dev
+  rules: !reference [deploy to dev, rules]
+  tags: !reference [deploy to dev, tags]
+  environment:
+    name: !reference [deploy to dev, environment, name]
