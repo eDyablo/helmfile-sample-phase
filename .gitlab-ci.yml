@@ -1,0 +1,8 @@
+include:
+- project: devops/tools/ci
+  file: helmfile-jobs.yaml
+
+workflow:
+  rules:
+  - exists:
+    - helmfile.yaml
