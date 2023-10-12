@@ -1,7 +1,3 @@
-helmDefaults:
-  kubeContext: {{ env "KUBE_CONTEXT" | default .Environment.Name }}
-  wait: true
-
 {{/*
 Walks through file system entries under infrastructure directory and builds
 environments from it. Every subdirectory name defines an environment and
@@ -73,10 +69,10 @@ helmfiles: # generated from $environments collected by the code above
     - deploymentBaseName: {{ $key }}
     - deploymentName: {{
         list
-          $.Values.deploymentNamePrefix
+          ($.Values | getOrNil "deploymentNamePrefix")
           $key
-          $.Values.deploymentNameSuffix
+          ($.Values | getOrNil "deploymentNameSuffix")
         | join "" }}
     - deploymentNamespace: {{
-        $.Values.deploymentNamespace | default $.Environment.Name }}
+        $.Values | getOrNil "deploymentNamespace" | default $.Environment.Name }}
   {{- end }}

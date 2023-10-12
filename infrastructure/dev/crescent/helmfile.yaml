@@ -1,0 +1,7 @@
+{{- tpl (readFile "../../deployment.yaml") $ -}}
+
+releases:
+- inherit:
+  - template: waning
+- inherit:
+  - template: waxing

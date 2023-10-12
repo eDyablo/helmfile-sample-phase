@@ -1,0 +1,18 @@
+templates:
+  base:
+    namespace: {{ .Values.deploymentNamespace }}
+    labels:
+      deployment: {{ .Values.deploymentBaseName }}
+    wait: true
+  moon:
+    inherit:
+    - template: base
+    chart: {{ .Values.rootHelmfilePath }}/charts/moon
+  waning:
+    inherit:
+    - template: moon
+    name: {{ .Values.deploymentName }}-waning
+  waxing:
+    inherit:
+    - template: moon
+    name: {{ .Values.deploymentName }}-waxing
